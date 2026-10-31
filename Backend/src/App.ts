@@ -28,4 +28,4 @@ checkDatabaseConnection()
 
 app.use('/user',User_Router)
 app.use('/product',Product_Route)
-app.use('/Admin',CheckAccess,Checkrole,Adminroute)
+app.use('/admin',CheckAccess,Checkrole,Adminroute)

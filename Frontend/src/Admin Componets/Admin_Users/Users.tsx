@@ -28,7 +28,7 @@ function Users() {
    async function GetAllUsers(){
       try{
         const currentToken=Globalstore.getState().accesstoken
-        const users=await api.get(`/Admin/users/?user=${searchedAdminUser}`,{headers:{Authorization:`Bearer ${currentToken}`}})
+        const users=await api.get(`/admin/users/?user=${searchedAdminUser}`,{headers:{Authorization:`Bearer ${currentToken}`}})
         if(typeof(users.data.message)==='string'){
           setnotfoundmessage(users.data.message)
           getusers([])}
@@ -53,7 +53,7 @@ function Users() {
   async function SetRole(username:string){
       try{
           const currentToken=Globalstore.getState().accesstoken
-          await api.post('/Admin/setrole',{username:username},{headers:{Authorization:`Bearer ${currentToken}`}})
+          await api.post('/admin/setrole',{username:username},{headers:{Authorization:`Bearer ${currentToken}`}})
           setSearchedAdminUser('')
           setaction(sa=>!sa)
       } 
@@ -72,7 +72,7 @@ function Users() {
   async function DeleteUser(username:string) {
       try{
          const currentToken=Globalstore.getState().accesstoken
-         await api.delete(`/Admin/deleteuser/${username}`,{headers:{Authorization:`Bearer ${currentToken}`}})
+         await api.delete(`/admin/deleteuser/${username}`,{headers:{Authorization:`Bearer ${currentToken}`}})
          setSearchedAdminUser('')
          setaction(sa=>!sa)
        }

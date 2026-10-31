@@ -27,7 +27,6 @@ export type itemtype={
     product_id:number,
     category:string,
     description:string,
-    reviews:reviewperson[],
     amount:number
 }
 

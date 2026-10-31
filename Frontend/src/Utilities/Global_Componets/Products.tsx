@@ -18,7 +18,7 @@ function Products({product,Eventfunc}:{product:itemtype,Eventfunc:(product:itemt
           </section>
         </section>
         
-        {parseFloat(product.newprice)>0 &&(<img className=" absolute w-15 h-15 sm:w-20 sm:h-20 top-0 right-0" src={Sale} alt="Sale Image"/>)}
+        {parseFloat(product.newprice)>0 &&(<img draggable={false} className=" absolute w-15 h-15 sm:w-20 sm:h-20 top-0 right-0 select-none" src={Sale} alt="Sale Image"/>)}
 
         <section className=" flex justify-around items-center text-lg sm:text-xl  select-none">
             <p className={`${parseFloat(product.newprice)>0 ? 'line-through Secondary_Text_Color' : 'text-center font-semibold Green_Text_Color '}`}>{product.price}$</p>

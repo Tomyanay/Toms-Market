@@ -125,7 +125,9 @@ function Change_User({setuseroptions,ChangeLighting}:{setuseroptions:React.Dispa
 
           <div>
            <p className=' Red_Text_Color mb-2 pl-1 select-none'>Once you delete your user, there is no going back</p>
-           <button type="button" onClick={DeleteUser} className='border-2 Border_Color rounded-xl w-full h-10 Border_Hover text-xl Red_Text_Color font-semibold select-none'>Delete User</button>
+           <button type="button" 
+            onClick={DeleteUser} 
+            className='border-2 Border_Color rounded-xl w-full h-10 hover:border-market-red dark:hover:border-dark-market-red text-xl Red_Text_Color font-semibold select-none'>Delete User</button>
           </div> 
          </form>   
          

@@ -11,42 +11,43 @@ import { FaStar } from "react-icons/fa";
 import Purchase_Product from "./Purchase_Product";
 import CreateComment from "./CreateComment";
 import Reviews from "./Reviews";
+import SortComment from "./SortComment";
 
 import Sale from '../Utilities/assets/sale-icon.webp'
+
+import { Sort } from "./Product_Info_data";
 
 import {useEffect, useState } from "react";
 import { Globalstore } from "../Utilities/Global_Store";
 
 import  RefreshCheck from "../Utilities/Refresh_Check";
 
-function Product_Info({product,setProductChange,setshowproduct}:
-{product:itemtype,setProductChange:React.Dispatch<React.SetStateAction<boolean>>,
-setshowproduct:React.Dispatch<React.SetStateAction<boolean>>}) {
+function Product_Info({product,setshowproduct}:{product:itemtype,setshowproduct:React.Dispatch<React.SetStateAction<boolean>>}) {
 
   const [isshowingword,setshowingword]=useState(false) //Show the word "items"
   
   const {user}=Globalstore()
 
-  const [isUpdating, setIsUpdating] = useState(false); //Prevent user from clicking the purchase button while it is active
-  const [quantity,setquantity]=useState(0) //Amount of item the user has ordered
-
-  const [comments,setcomments]=useState<reviewperson[]>(product.reviews) //all of our review to show instant change
-  
+  const [isUpdating, setIsUpdating]=useState(false); //Prevent user from clicking the purchase button while it is active
+  const [quantity,setquantity]=useState(0) //Amount of prodcuts the user has ordered
+  const [comments,setcomments]=useState<reviewperson[]>([]) //all of the reviews of the product in order for to show instant change
   const [properties,setproperties]=useState<AddComment>({rating:1,comment:'',exists:false}) //For current user comment and edit
+  const [ordertype,setordertype]=useState('')
 
-
-  async function GetQuantity() {
+  async function GetProductValues() {
       if(isUpdating){return}
       const currentToken = Globalstore.getState().accesstoken;
       try{
-        const response=await api.get(`/product/quantity/${product.product_id}`,{headers:{Authorization:`Bearer ${currentToken}`}})  
-        setquantity(response.data)}
-
+        const quantity=await api.get(`/product/quantity/${product.product_id}`,{headers:{Authorization:`Bearer ${currentToken}`}})  
+        setquantity(quantity.data)
+        const reviews=await api.get(`/product/getcomments/${product.product_id}`,{headers:{Authorization:`Bearer ${currentToken}`}})
+        setcomments(reviews.data)
+      }
       catch(error){
         if(axios.isAxiosError(error)){
           if(error.response?.status===401){
             const restore= await RefreshCheck()
-            if(restore){GetQuantity()}}}
+            if(restore){GetProductValues()}}}
         else{console.log('Get Quantity',error)}
         return ''
        } 
@@ -83,12 +84,11 @@ setshowproduct:React.Dispatch<React.SetStateAction<boolean>>}) {
 
     else{setcomments(sc=>[...sc,{reviewerName:user.username,rating:properties.rating,comment:comment,date:new Date().toISOString(),role:user.role}])}
    
-
     try{
       const currentToken=Globalstore.getState().accesstoken
       await api.post('/product/setcomment',{rating:properties.rating,comment:comment,product_id:product.product_id,reviewerName:user.username,role:user.role},
       {headers:{Authorization:`Bearer ${currentToken}`}})
-       setProductChange(sc=>!sc)  
+      setordertype('')
     }
 
     catch(error){
@@ -106,12 +106,11 @@ setshowproduct:React.Dispatch<React.SetStateAction<boolean>>}) {
       try{
         const currentToken=Globalstore.getState().accesstoken
         await api.delete(`/product/deletecomment/${reviewerName}/${product.product_id}`,{headers:{Authorization:`Bearer ${currentToken}`}})
-        setProductChange(sc=>!sc) 
+        setordertype('')
        }
          
       catch(error){
         if(axios.isAxiosError(error)){
-          if(error.response?.status===404){setProductChange(sc=>!sc)}
           if(error.response?.status===401){
              const restore=await RefreshCheck()
              if(restore){DeleteCommand(reviewerName)}}}
@@ -119,28 +118,33 @@ setshowproduct:React.Dispatch<React.SetStateAction<boolean>>}) {
         return ''
       }
     }
-  
+
+  function SortComments(type:string){
+      if(type==='asc'){setcomments(sc=>[...sc].sort((a,b)=>b.date.localeCompare(a.date)))}
+      else{setcomments(sc=>[...sc].sort((a,b)=>a.date.localeCompare(b.date)))}
+      setordertype(type)
+  }
+
   /* Way for the user to see the comment state aka did he sent one and can edit it or not */
   useEffect(()=>{
     function CheckProperties(){
        const commentscopy=[...comments]
        const review=commentscopy.find((v)=>v.reviewerName===user.username)
        if(review){setproperties(sp=>({...sp,rating:review.rating,comment:review.comment,exists:true}))}
-       else{setproperties(sp=>({...sp,rating:1,comment:'',exists:false}))}
-      }
+       else{setproperties(sp=>({...sp,rating:1,comment:'',exists:false}))}}
 
       CheckProperties()
      },[comments,user.username])
 
   // eslint-disable-next-line react-hooks/exhaustive-deps
-  useEffect(()=>{GetQuantity()},[])
+  useEffect(()=>{GetProductValues()},[])
 
   return (
      <motion.div initial={{opacity:0}} animate={{opacity:1}} transition={{duration:.5,ease:'easeInOut'}} exit={{opacity:0}}
       onClick={()=>setshowproduct(false)} className="fixed inset-0 z-50 flex justify-center items-center ">
   
       <motion.div onClick={(e)=>e.stopPropagation()} initial={{opacity:0}} animate={{opacity:1}} transition={{duration:.5,ease:'easeInOut'}}
-        className="Inner_Section_Background border-3 Border_Color rounded-xl overflow-y-auto NoScrollbar w-170 md:w-200 h-250 mx-4 relative">
+        className="Inner_Section_Background border-3 Border_Color rounded-xl overflow-y-auto NoScrollbar w-170 md:w-200 h-200 sm:h-250 mx-4 relative">
 
         <section className=" flex items-center justify-between">
           <h1 className="Accent_Color text-xl font-semibold m-1.5">{product.title}</h1>
@@ -156,7 +160,7 @@ setshowproduct:React.Dispatch<React.SetStateAction<boolean>>}) {
           <img draggable={false} className="w-90 h-90 rounded-xl my-5 select-none" src={product.images} alt={`${product.title} Image`} />
         </article>
        
-       {parseFloat(product.newprice)>0 &&(<img className=" absolute w-20 h-20 top-14.5 right-0.5" src={Sale} alt="Sale Image" />)}
+       {parseFloat(product.newprice)>0 &&(<img draggable={false} className=" absolute w-20 h-20 top-14.5 right-0.5 select-none " src={Sale} alt="Sale Image" />)}
        
         <div>
           <h1 className="Accent_Color text-xl font-semibold ml-1.5 ">Description</h1>
@@ -170,9 +174,14 @@ setshowproduct:React.Dispatch<React.SetStateAction<boolean>>}) {
 
          <CreateComment CreateUpdateComment={CreateUpdateComment} properties={properties} setproperties={setproperties} />
 
+         {comments.length>0 && (
+         <div className="my-5 flex justify-evenly w-[70%] sm:w-[60%] text-[21px] font-semibold select-none">
+              {Sort.map((v,i)=><SortComment key={i} value={v} SortComments={SortComments} ordertype={ordertype}/>)}
+         </div>)}
+
          {comments.length>0 &&(
          <section className=" mx-1.5 mb-5 rounded-lg">
-            {comments.sort((a,b)=>b.date.localeCompare(a.date)).map((v,i)=><Reviews key={i} reviewer={v} index={i} length={comments.length} DeleteCommand={DeleteCommand}/>)}
+            {comments.map((v,i)=><Reviews key={i} reviewer={v} index={i} length={comments.length} DeleteCommand={DeleteCommand}/>)}
          </section>)}
 
          {comments.length===0 && (<p className="Non_Data_State text-lg">No reviews for this item yet</p>)}

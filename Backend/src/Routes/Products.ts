@@ -21,7 +21,7 @@ Product_Route.get('/search',
 
    try{
       const result= await pool.query(`
-        SELECT * FROM products 
+        SELECT product_id,title,category,price,newprice,rating,description,images,amount FROM products 
         WHERE title ILIKE $1 OR category ILIKE $1`,[searchTerm])
       if(result.rowCount===0){return res.status(200).json({message:`No Product was found with the name "${product}" `})}
 
@@ -52,14 +52,14 @@ Product_Route.get('/getproducts',
     try{      
         if(category==='All'){ 
           if(order==='base'){
-            const products=await pool.query('SELECT * FROM products')
+            const products=await pool.query('SELECT product_id,title,category,price,newprice,rating,description,images,amount FROM products')
             res.status(200).send(products.rows)
             return
           }
           
           else {
             const products=await pool.query(`
-            SELECT *,CASE WHEN newprice>0 THEN newprice ELSE price END AS currentprice FROM products
+            SELECT product_id,title,category,price,newprice,rating,description,images,amount,CASE WHEN newprice>0 THEN newprice ELSE price END AS currentprice FROM products
             ORDER BY ${sort} ${order}`)
             res.status(200).send(products.rows)
             return}
@@ -67,13 +67,13 @@ Product_Route.get('/getproducts',
 
         else{
           if(order==='base'){
-            const products=await pool.query('SELECT * FROM products WHERE category = $1',[category])
+            const products=await pool.query('SELECT product_id,title,category,price,newprice,rating,description,images,amount FROM products WHERE category = $1',[category])
             res.status(200).send(products.rows)
             return}
 
           else {
             const products=await pool.query(`
-            SELECT *,CASE WHEN newprice>0 THEN newprice ELSE price END AS currentprice FROM products
+            SELECT product_id,title,category,price,newprice,rating,description,images,amount,CASE WHEN newprice>0 THEN newprice ELSE price END AS currentprice FROM products
             WHERE category = $1
             ORDER BY ${sort} ${order}`,[category])
             res.status(200).send(products.rows)
@@ -104,13 +104,33 @@ Product_Route.get('/quantity/:Product_id',
         LEFT JOIN Cart c ON p.product_id = c.product_id AND c.user_id = $1 
         WHERE p.product_id = $2`, [user_id,Product_id]);
   
-     if(result.rowCount===0){return res.status(400).json({message:'Invalid Id'})}
+     if(result.rowCount===0){return res.status(400).json({message:'Invalid Product Id'})}
      if(!result.rows[0].quantity){return res.status(200).send(0)}
-     else{return res.status(200).send(result.rows[0].quantity)}
+     return res.status(200).send(result.rows[0].quantity)
     }
     catch(error){
       console.error('Get quantity',error)
       return res.status(500).json({message:'Internal server error'})
+    }
+})
+
+
+Product_Route.get('/getcomments/:Product_id',CheckAccess,
+param('Product_id').exists().withMessage('Product_id is required').isNumeric().withMessage('Product_id must be a number'),
+async (req,res)=>{
+    const errors=validationResult(req)
+    if(!errors.isEmpty()){return res.status(400).json({message:errors.array()[0]?.msg})}
+    
+    const {Product_id}=req.params
+    try{
+      const result=await pool.query('SELECT reviews FROM products WHERE product_id=$1',[Product_id])
+      if(result.rowCount===0){return res.status(400).json({message:'Invalid Product Id'})}
+      return res.status(200).send(result.rows[0].reviews)
+    }
+
+    catch(error){
+      console.log('Comments error')
+      return res.status(500).json({message:'Internal Server Error'})
     }
 })
 

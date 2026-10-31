@@ -24,7 +24,7 @@ function Create_Product() {
 
     try{
        const currentToken=Globalstore.getState().accesstoken
-       const response=await api.post('/Admin/addproduct',{...data},{headers:{Authorization:`Bearer ${currentToken}`}})
+       const response=await api.post('/admin/addproduct',{...data},{headers:{Authorization:`Bearer ${currentToken}`}})
        setSuccess(response.data)
     }
 

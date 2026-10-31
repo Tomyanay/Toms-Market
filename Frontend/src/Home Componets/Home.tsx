@@ -25,13 +25,11 @@ function Home() {
 
   const [products,SetProducts]=useState<itemtype[]>([]) //ALl of the existing products
   
-  const [product,SetProduct]=useState<itemtype>({title:'',rating:0,price:'',newprice:'',images:'',product_id:0,category:'',description:'',reviews:[],amount:0}) // A specific product to see more info of
+  const [product,SetProduct]=useState<itemtype>({title:'',rating:0,price:'',newprice:'',images:'',product_id:0,category:'',description:'',amount:0}) // A specific product to see more info of
   
   const [showproduct,setshowproduct]=useState(false) //Shows product info window
   
   const [sortoptions,setsortoptions]=useState(Sorting) //Show the sorting options
-
-  const [ProductChange,setProductChange]=useState(false) //Calls the api fetch once more when we change something about the Product or select one
 
   const [notfound,setnotfound]=useState(false) //If we dont have any products to show
   
@@ -72,7 +70,7 @@ function Home() {
       return ''  
   }
 
-  const {isError,error,isLoading}=useQuery({queryKey:['Home',category,NewCart,SortedName,SortedType,ProductChange],queryFn:GetProducts})
+  const {isError,error,isLoading}=useQuery({queryKey:['Home',category,NewCart,SortedName,SortedType],queryFn:GetProducts})
 
   function SetOrder(order:string){
       if(order==='Sort by title'){return SetSort('title','asc')}
@@ -119,9 +117,9 @@ function Home() {
     <div className=" Inner_Section_Background">
       <section className="p-5">
         <div className=" flex flex-col md:flex-row items-center justify-evenly  text-xl md:text-[22px] lg:text-2xl">
-          <section className="flex items-center my-1.5 Text_Hover  ">
+          <section className="flex items-center my-1.5 ">
             <BiSolidCategoryAlt className="Secondary_Text_Color mx-0.5 "/>
-            <h1 onClick={()=>Set_Enable_Category(!Enablecategory)} className="font-semibold Orange_Text_Color cursor-pointer ">Categories</h1>
+            <h1 onClick={()=>Set_Enable_Category(!Enablecategory)} className="font-semibold Orange_Text_Color cursor-pointer Text_Hover">Categories</h1>
           </section>
           {sortoptions.map((v)=>(
             <div onClick={()=>SetOrder(v.Order)} className="font-semibold Orange_Text_Color cursor-pointer Text_Hover flex items-center" key={v.Order}>
@@ -174,7 +172,7 @@ function Home() {
       <AnimatePresence>
        {(showproduct) &&(
        <>
-        <Product_Info product={product} setshowproduct={setshowproduct} setProductChange={setProductChange}/>
+        <Product_Info product={product} setshowproduct={setshowproduct}/>
         <div className="fixed inset-0 bg-black/80 z-40"/>
        </>)}
       </AnimatePresence>

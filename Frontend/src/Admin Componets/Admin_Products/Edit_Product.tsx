@@ -21,7 +21,7 @@ function Edit_Product({product,setChosenItem,setaction}:{product:AdminProducts,s
         
         try{
             const currentToken=Globalstore.getState().accesstoken
-            await api.put('/Admin/updateproduct',{...data},{headers:{Authorization:`Bearer ${currentToken}`}})
+            await api.put('/admin/updateproduct',{...data},{headers:{Authorization:`Bearer ${currentToken}`}})
             setaction(sa=>!sa)
             setChosenItem({title:'',rating:0,price:'',newprice:'',images:'',product_id:0,category:'',description:'',amount:0})
         }

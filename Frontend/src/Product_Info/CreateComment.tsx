@@ -5,7 +5,7 @@ import { FaStar } from "react-icons/fa";
 function CreateComment({properties,setproperties,CreateUpdateComment}:{properties:AddComment,
 setproperties: React.Dispatch<React.SetStateAction<AddComment>>,CreateUpdateComment:(FormData:FormData)=>void}) {
   return (
-    <section className="my-5 Outer_Section_Background mx-2 rounded-lg ">
+    <section className="my-2 Outer_Section_Background mx-2 rounded-lg ">
       <h1 className=" Orange_Text_Color text-lg font-semibold pt-2 ml-3">{`${properties.exists ? 'Edit' : 'Add'}`} comment</h1> 
       <form className="mx-3.5" action={CreateUpdateComment} >
         <div className=" flex justify-center items-center mt-1 mb-1.5 ">

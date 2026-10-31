@@ -30,7 +30,7 @@ function All_Products() {
    async function GetAllProducts() {
      try{
       const currentToken=Globalstore.getState().accesstoken
-      const products=await api.get(`/Admin/products/?product=${searchedAdminProduct}`,{headers:{Authorization:`Bearer ${currentToken}`}})
+      const products=await api.get(`/admin/products/?product=${searchedAdminProduct}`,{headers:{Authorization:`Bearer ${currentToken}`}})
       if(typeof(products.data.message)==='string'){
         setnotfoundmessage(products.data.message)
         getproducts([])}
@@ -55,7 +55,7 @@ function All_Products() {
    async function DeleteProduct(product_id:number) {
       try{
         const currentToken=Globalstore.getState().accesstoken
-        await api.delete(`/Admin/deleteproduct/${product_id}`,{headers:{Authorization:`Bearer ${currentToken}`}})
+        await api.delete(`/admin/deleteproduct/${product_id}`,{headers:{Authorization:`Bearer ${currentToken}`}})
         setaction(sa=>!sa)
       }
 

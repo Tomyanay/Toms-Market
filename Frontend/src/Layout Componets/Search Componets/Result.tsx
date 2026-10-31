@@ -22,15 +22,13 @@ function Result() {
 
   const [products,SetProducts]=useState<itemtype[]>([]) //All of the existing products
     
-  const [product,SetProduct]=useState<itemtype>({title:'',rating:0,price:'',newprice:'',images:'',product_id:0,category:'',description:'',reviews:[],amount:0}) // A specific product to see more info of
+  const [product,SetProduct]=useState<itemtype>({title:'',rating:0,price:'',newprice:'',images:'',product_id:0,category:'',description:'',amount:0}) // A specific product to see more info of
     
   const [showproduct,setshowproduct]=useState(false) //Shows product info window
 
   const [issearcing,setsearching]=useState(true) //Check if the user has searched for something
 
   const [notfound,setnotfound]=useState('') //If the we didnt find anything in the search
-
-  const [ProductChange,setProductChange]=useState(false) //Calls the api fetch once more when we change something about the Product or select one
 
   const {NewCart}=layout_store()
 
@@ -54,7 +52,7 @@ function Result() {
     else{setsearching(false);return ''}
 
   }
-  const {isLoading,isError,error}=useQuery({queryKey:['Search',searcheditem,NewCart,ProductChange],queryFn:GetResult})
+  const {isLoading,isError,error}=useQuery({queryKey:['Search',searcheditem,NewCart],queryFn:GetResult})
 
 
   return (
@@ -72,7 +70,7 @@ function Result() {
         <AnimatePresence>
          {(showproduct) &&(
          <>
-          <Product_Info product={product} setProductChange={setProductChange} setshowproduct={setshowproduct}/>
+          <Product_Info product={product} setshowproduct={setshowproduct}/>
           <div className="fixed inset-0 bg-black/80 z-40"/>
          </>)}
         </AnimatePresence>
