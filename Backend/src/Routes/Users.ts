@@ -79,7 +79,7 @@ User_Router.post('/login',
       await client.query('DELETE FROM refresh_table WHERE user_id=$1',[user_id]) 
       await client.query(`INSERT INTO refresh_table(user_id,token,expired_at) values($1,$2, NOW() + INTERVAL '15 days')`,[user_id,hashedtoken])
     
-      res.cookie('Refresh_Token',RefreshToken,{httpOnly:true,sameSite:'lax',secure:false,maxAge:1000 * 60 * 60 * 24 * 15})
+      res.cookie('Refresh_Token',RefreshToken,{httpOnly:true,sameSite:'none',secure:true,maxAge:1000 * 60 * 60 * 24 * 15})
       
       return res.status(200).json({
        username:username,
@@ -144,7 +144,7 @@ User_Router.delete('/signout', async (req,res)=>{
          const hashedtoken=crypto.createHash('sha256').update(RefreshToken).digest('hex')
          await pool.query('DELETE FROM refresh_table WHERE token=$1',[hashedtoken])
 
-         res.clearCookie('Refresh_Token',{httpOnly:true,sameSite:'lax',secure:false})
+         res.clearCookie('Refresh_Token',{httpOnly:true,sameSite:'none',secure:true})
          return res.status(200).json({message:'Sign out was succesfull'})
         }
 
@@ -235,7 +235,7 @@ User_Router.delete('/delete/:username',CheckAccess,
 
     await client.query('DELETE FROM users WHERE username=$1',[username])
 
-    res.clearCookie('Refresh_Token',{httpOnly:true,sameSite:'lax',secure:false})
+    res.clearCookie('Refresh_Token',{httpOnly:true,sameSite:'none',secure:true})
 
     await client.query('COMMIT');
     res.status(200).json({message:'User was Deleted'})
