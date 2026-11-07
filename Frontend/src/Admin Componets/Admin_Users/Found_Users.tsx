@@ -12,7 +12,7 @@ function Found_Users({user,SetRole,DeleteUser}:{user:user,SetRole:(username:stri
     <motion.div initial={{opacity:0,x:-250}} animate={{opacity:1,x:0}} transition={{duration:.5,ease:'easeInOut'}} 
        className="Card_Hover px-1 mx-1 my-1.5 py-2 font-semibold rounded-lg text-sm sm:text-lg grid grid-cols-3">
 
-      <section className="Orange_Text_Color flex items-center  ">
+      <section className="Orange_Text_Color flex justify-center items-center  ">
         <FaRegUser className="mr-1"/>
         <p title={user.username} className="line-clamp-1">{user.username}</p>
       </section>
