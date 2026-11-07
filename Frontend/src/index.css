@@ -1,0 +1,145 @@
+
+@import "tailwindcss";
+
+@custom-variant dark (&:where(.dark, .dark *));
+
+@theme{
+    --font-Manrope: 'Manrope', sans-serif;
+    --font-Inter: 'Inter', sans-serif;
+
+    /* =========================================================
+                       LIGHT MODE — DEFAULT
+     ========================================================= */
+
+   /* Background colors */
+    --color-main-bg: #f8fafc;          /* Main page background */
+    --color-outer-section: #eef2f7;    /* Areas outside main content */
+    --color-inner-section: #ffffff;    /* Cards / panels */
+
+    --Light_Shadow: 2px 2px 3px rgba(15, 23, 40, 0.1),-2px -2px 3px rgba(255, 255, 255, 0.85);
+
+   /* Highlight colors */
+    --color-accent: #2563eb;           /* Main blue / primary actions */
+
+   /* Accent colors */
+    --color-market-green: #16a34a;      /* Success / prices / positive actions */
+    --color-market-orange: #f97316;     /* Deals / warnings / attention */
+    --color-market-teal: #0f766e;
+    --color-market-red: #e11d48;
+
+   /* Cards / Products */
+   --color-hover: #e8edf3;         /* Product/card hover */
+   --color-border: #dbe2ea;           /* Borders / dividers */
+
+
+  /* Text colors */
+   --color-primary: #111827;            /* Main text */
+   --color-secondary: #64748b;          /* Secondary text */
+
+
+  /* =========================================================
+                            DARK MODE
+     ========================================================= */
+
+  /* Background colors */
+   --color-dark-main-bg: #0f172a;       /* Main dark background */
+   --color-dark-outer-section: #172033; /* Areas outside content */
+   --color-dark-inner-section: #1e293b; /* Cards / panels */
+
+   --Dark_Shadow: 2px 2px 3px rgba(0, 0, 0, 0.1),-2px -2px 3px rgba(51, 65, 85, 0.3);
+
+  /* Highlight colors */
+   --color-dark-accent: #60a5fa;        /* Bright blue for dark mode */
+
+  /* Accent colors */
+   --color-dark-market-green: #4ade80;  /* Success / prices */
+   --color-dark-market-orange: #fb923c; /* Deals / warnings */
+   --color-dark-market-teal: #2dd4bf;
+   --color-dark-market-red: #fb7185;
+
+  /* Cards / Products */
+   --color-dark-hover: #273449;         /* Product/card hover */
+   --color-dark-border: #334155;        /* Borders / dividers */
+
+
+  /* Text colors */
+   --color-dark-primary: #f8fafc;       /* Main text */
+   --color-dark-secondary: #94a3b8;     /* Secondary text */
+}
+
+
+@layer base {
+  html {@apply scroll-smooth overflow-x-hidden;}
+  
+  body {@apply font-Inter text-primary bg-outer-section dark:bg-dark-outer-section dark:text-dark-primary capitalize;}
+
+  h1,h2,h3 {@apply font-Manrope;}
+
+  button,textarea{@apply font-Inter;}
+
+ /* =========================================================
+                       BACKGROUND DECORATION
+    ========================================================= */
+
+  .Inner_Section_Background {@apply bg-inner-section dark:bg-dark-inner-section;}
+
+  .Outer_Section_Background {@apply bg-outer-section dark:bg-dark-outer-section;}
+
+  .Shadow_Background {@apply shadow-(--Dark_Shadow) dark:shadow-(--Light_Shadow)}
+
+ /* =========================================================
+                          TEXT COLORS
+    ========================================================= */
+
+  .Secondary_Text_Color {@apply text-secondary dark:text-dark-secondary;} /* Secondery less importent text */
+
+  .Accent_Color {@apply text-accent dark:text-dark-accent;} /* Highlight/Title */
+
+  .Green_Text_Color {@apply text-market-green dark:text-dark-market-green;} /* Confirm/Accessed */
+
+  .Orange_Text_Color {@apply text-market-orange dark:text-dark-market-orange;} /*Main Color */
+
+  .Red_Text_Color {@apply text-market-red dark:text-dark-market-red;} /* Special Color/Warning */
+
+ /* =========================================================
+                        TEXT DECORATION
+    ========================================================= */
+
+  .Title_color {@apply bg-[linear-gradient(to_right,var(--color-accent),var(--color-market-teal),var(--color-market-green))] bg-clip-text text-transparent;}
+
+  .Text_Shadow {@apply text-shadow-(--Light_Shadow) dark:text-shadow-(--Dark_Shadow);}
+
+  .Text_Hover {@apply hover:text-market-teal dark:hover:text-dark-market-teal;}
+
+ /* =========================================================
+                       BACKGROUND HOVERS
+    ========================================================= */
+ 
+  .Bg_Hover {@apply hover:bg-market-teal dark:hover:bg-dark-market-teal;}
+
+  .Card_Hover {@apply hover:bg-hover dark:hover:bg-dark-hover;}
+
+ /* =========================================================
+                            BORDERS
+    ========================================================= */
+
+  .Border_Color {@apply border-border dark:border-dark-border;}
+
+  .Border_Hover {@apply hover:border-market-teal! dark:hover:border-dark-market-teal!;}
+
+  
+ /* =========================================================
+               FOR LOADING / ERROR / EMPTY STATES
+    ========================================================= */
+
+  .Non_Data_State {@apply text-xl lg:text-2xl text-center flex justify-center items-center py-10 mx-1 h-[inherit] font-semibold;}
+}
+
+@layer utilities {
+  .NoScrollbar {
+    scrollbar-width: none;
+    &::-webkit-scrollbar {display:none;}
+  
+  }
+}
+
