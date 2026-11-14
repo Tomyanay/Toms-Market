@@ -14,6 +14,7 @@ import dotenv from 'dotenv'
 import jwt from 'jsonwebtoken'
 
 import CheckAccess from '../Middleware/accesstoken.js'
+import Checkrole from '../Middleware/Checkrole.js'
 
 import crypto from 'crypto'
 
@@ -250,4 +251,5 @@ User_Router.delete('/delete/:username',CheckAccess,
   finally{client.release()}
 })
 
+User_Router.get('/access',CheckAccess,Checkrole,async (req,res)=>{res.status(200).json({message:'User is Fine'})})
 

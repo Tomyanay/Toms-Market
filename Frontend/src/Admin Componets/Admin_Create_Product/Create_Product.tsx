@@ -35,7 +35,9 @@ function Create_Product() {
       if(axios.isAxiosError(error)){
         if(error.response?.status===401){
           const restore=await RefreshCheck()
-          if(restore){Create_New_Product(data)}}}
+          if(restore){Create_New_Product(data)}}
+        else{setError('root',{message:error.message})}  
+      }
       else{console.log('Admin Create Product',error)}
       return ''
      } 
@@ -43,7 +45,7 @@ function Create_Product() {
 
   return (
     <div>
-      <h1 className=" text-xl font-semibold Accent_Color">Create a new product </h1>
+      <h1 className=" text-xl lg:text-2xl font-semibold Accent_Color">Create a new product </h1>
       <form className="p-2" onSubmit={handleSubmit(Create_New_Product)}>
 
        <section className="flex flex-col my-4">
@@ -147,6 +149,7 @@ function Create_Product() {
          {errors.description && (<p className="Red_Text_Color my-1 select-none text-sm sm:text-base">{errors.description.message}</p>)}
        </section>
        
+       {errors.root &&(<p className='Red_Text_Color my-5 select-none text-base sm:text-lg text-center'>{errors.root.message}</p>)}
        {Succcess !== '' && (<p className="text-center Green_Text_Color font-semibold my-3 text-lg lg:text-xl">{Succcess}</p>)}
 
        <div>

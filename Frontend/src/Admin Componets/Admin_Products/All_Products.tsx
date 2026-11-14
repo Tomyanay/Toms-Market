@@ -45,7 +45,9 @@ function All_Products() {
       if(axios.isAxiosError(error)){
         if(error.response?.status===401){
           const restore= await RefreshCheck()
-          if(restore){GetAllProducts()}}}    
+          if(restore){GetAllProducts()}}
+        else{throw error}  
+       }    
       else{console.log('Admin Get Products',error)}
       return ''
      }
@@ -69,30 +71,32 @@ function All_Products() {
        }
      }
 
-    const {isLoading}=useQuery({queryKey:['Admin_Products',searchedAdminProduct,action],queryFn:GetAllProducts}) 
+    const {isLoading,isError,error}=useQuery({queryKey:['Admin_Products',searchedAdminProduct,action],queryFn:GetAllProducts}) 
     
   return (
-    <div>
-       <h1 className=" text-xl font-semibold Accent_Color">All Products</h1>
-      
+   <>
+    {(!isLoading && !isError) &&(
+     <div>
+       <h1 className=" text-xl lg:text-2xl font-semibold Accent_Color">All Products</h1>
+
        {ChosenItem.title==='' &&(
        <>
         <Admin_Search searchedAdmin={searchedAdminProduct} setSearchedAdmin={setSearchedAdminProduct} message="Search for Products"/>
-        {(!isLoading && allproducts.length>0) && ( 
+        {(allproducts.length>0) && ( 
          <>
           <section className=" border-3 Border_Color rounded-xl my-2 max-h-screen overflow-y-auto NoScrollbar"> 
              {allproducts.sort((a,b)=>a.title.localeCompare(b.title)).map((v)=><Found_Products key={v.product_id} product={v} DeleteProduct={DeleteProduct} setChosenItem={setChosenItem}/>)}     
           </section>
          </>
         )}
-
-        {(!isLoading && allproducts.length===0) &&(<p className="Non_Data_State">{notfoundmessage}</p>)} 
-        {isLoading && allproducts.length===0 &&(<p className="Non_Data_State">Loading Products...</p>)}
       </>)}
 
       {ChosenItem.title!=='' &&(<Edit_Product product={ChosenItem} setChosenItem={setChosenItem} setaction={setaction}/>)}
-
-    </div>
+    </div>)}
+    {isLoading && allproducts.length===0 &&(<p className="Non_Data_State">Loading Products...</p>)}
+    {(!isLoading && allproducts.length===0) &&(<p className="Non_Data_State">{notfoundmessage}</p>)} 
+    {isError &&(<p className="Non_Data_State -mt-20">{error.message}</p>)}
+   </>
   )
 }
 

@@ -43,8 +43,10 @@ function Users() {
        catch(error){
          if(axios.isAxiosError(error)){
            if(error.response?.status===401){
-           const restore= await RefreshCheck()
-           if(restore){GetAllUsers()}}}
+            const restore= await RefreshCheck()
+            if(restore){GetAllUsers()}}
+           else{throw error}  
+          }
          else{console.log('Admin Get Users',error)}
          return ''
         }
@@ -80,22 +82,25 @@ function Users() {
       catch(error){
         if(axios.isAxiosError(error)){
           if(error.response?.status===401){
-          const restore= await RefreshCheck()
-          if(restore){DeleteUser(username)}}}
+           const restore= await RefreshCheck()
+           if(restore){DeleteUser(username)}}
+        }
         else{console.log('Admin Delete User',error)}
         return ''
       }
     }
 
 
-  const {isLoading}=useQuery({queryKey:['Admin_Users',searchedAdminUser,action],queryFn:GetAllUsers}) 
+  const {isLoading,isError,error}=useQuery({queryKey:['Admin_Users',searchedAdminUser,action],queryFn:GetAllUsers}) 
 
   return (
+  <>
+    {((!isLoading && !isError) && 
     <div>
-       <h1 className="text-xl font-semibold Accent_Color">All client Users</h1>
+       <h1 className="text-xl lg:text-2xl font-semibold Accent_Color">All client Users</h1>
        <Admin_Search searchedAdmin={searchedAdminUser} setSearchedAdmin={setSearchedAdminUser} message="Search for Users"/>
 
-       {(!isLoading && allusers.length>0) && (
+       {(allusers.length>0) && (
        <>
         <section className="text-center"> 
          <p className="Secondary_Text_Color text-base pb-2.5 ">Press the "Promote" button to give the chosen user admin privlages and the "Delete" button to delete the chosen user </p> 
@@ -106,10 +111,11 @@ function Users() {
              {allusers.sort((a,b)=>a.username.localeCompare(b.username)).map((v)=><Found_Users SetRole={SetRole} DeleteUser={DeleteUser} key={v.username} user={v}/>)}   
         </section>
       </>)}
-
-      {(!isLoading && allusers.length===0) &&(<p className="Non_Data_State">{notfoundmessage}</p>)} 
-      {isLoading && allusers.length===0 &&(<p className="Non_Data_State">Loading Users...</p>)}
-    </div>
+    </div>)}
+    {isLoading && allusers.length===0 &&(<p className="Non_Data_State">Loading Users...</p>)}
+    {(!isLoading && allusers.length===0) &&(<p className="Non_Data_State">{notfoundmessage}</p>)} 
+    {isError &&(<p className="Non_Data_State -mt-20">{error.message}</p>)}
+   </> 
   )
 }
 

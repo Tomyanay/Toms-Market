@@ -53,7 +53,7 @@ function Login() {
   }
   return (
     <div className="h-screen flex justify-center items-center">
-      <form onSubmit={handleSubmit(Login)} className='Inner_Section_Background p-9 border-3 Border_Color rounded-lg mx-5'>
+      <form onSubmit={handleSubmit(Login)} className='Inner_Section_Background py-9 px-9 sm:px-15 border-3 Border_Color rounded-xl mx-5'>
 
         <h1 className='text-2xl font-semibold text-center Accent_Color'>Login to the market</h1>
 
@@ -62,8 +62,8 @@ function Login() {
 
          <input type="text" className='h-10 border-2 Border_Color pl-2 outline-0 rounded-lg Border_Hover' 
            {...register('Username',{required:'Field is required',
-           minLength:{value:2,message:'Username must be between 2 and 20 characters'},
-           maxLength:{value:20,message:'Username must be between 2 and 20 characters'}})}
+           minLength:{value:2,message:'Username must be between 2-20 characters'},
+           maxLength:{value:20,message:'Username must be between 2-20 characters'}})}
           id='username'  
           placeholder='Enter Username' 
           autoComplete='off' />
@@ -77,8 +77,8 @@ function Login() {
             className='h-10 border-2 Border_Color relative rounded-lg Border_Hover'>
             <input type={type.password} className='h-full w-full pl-2 outline-0' 
               {...register('Password',{required:'Field is required',
-              minLength:{value:8, message:'Password must be between 8 and 25 characters'},
-              maxLength:{value:25, message:'Password must be between 8 and 25 characters'}})}
+              minLength:{value:8, message:'Password must be between 8-25 characters'},
+              maxLength:{value:25, message:'Password must be between 8-25 characters'}})}
              id='password' 
              placeholder='Enter Password'
              autoComplete="off" />
@@ -95,8 +95,10 @@ function Login() {
         <div className='mt-5'>
           <button className='border-2 Border_Color rounded-xl w-full h-10 Border_Hover text-xl mb-5 Accent_Color font-semibold select-none'>{isSubmitting ? 'Loading...' : 'Submit'}</button>
         </div>  
-
-        <Link to={'/newuser'} className='Secondary_Text_Color hover:underline text-base sm:text-lg select-none Text_Hover'>Don't have a user? click here</Link>
+        
+        <footer className="text-center">
+          <Link to={'/newuser'} className='Secondary_Text_Color hover:underline text-base sm:text-lg select-none Text_Hover'>Don't have a user? click here</Link>
+        </footer>
          
       </form>
     </div>

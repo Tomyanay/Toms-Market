@@ -43,10 +43,11 @@ function Change_User({setuseroptions,ChangeLighting}:{setuseroptions:React.Dispa
       catch(error){
        setDonemessage('')
        if(axios.isAxiosError(error)){
-         if(error.response?.status===409){setError('Username',{message:'User with that name already exists'})}
+         if(error.response?.status===409){return setError('Username',{message:'User with that name already exists'})}
          else if(error.response?.status===401){
             const restore=await RefreshCheck()
-            if(restore){Changeuser(data)}}}
+            if(restore){Changeuser(data)}}
+         else{setError('root',{message:error.message})}}
        else{console.log('Change User',error)}
        return ''
       }
@@ -66,7 +67,7 @@ function Change_User({setuseroptions,ChangeLighting}:{setuseroptions:React.Dispa
           if(error.response?.status===401){
             const restore=await RefreshCheck()
             if(restore){DeleteUser()}}}
-        else{console.log(error)}
+        else{console.log('Delete User',error)}
         return ''
        }
      }
@@ -76,14 +77,14 @@ function Change_User({setuseroptions,ChangeLighting}:{setuseroptions:React.Dispa
          onClick={()=>setuseroptions(false)}className="fixed inset-0 z-50 flex justify-center items-center ">
      
         <motion.div onClick={(e)=>e.stopPropagation()} initial={{opacity:0}} animate={{opacity:1}} transition={{duration:.5,ease:'easeInOut'}}
-          className="Inner_Section_Background border-3 Border_Color rounded-xl w-170 md:w-200  mx-4 relative">
+          className="Inner_Section_Background border-3 Border_Color rounded-xl w-130 mx-4 relative">
 
-         {!user.isdark &&(<MdDarkMode onClick={ChangeLighting} className=" text-gray-400 m-1 text-3xl cursor-pointer top-2 right-2 absolute select-none "/>)}
-         {user.isdark &&(<MdLightMode onClick={ChangeLighting} className=" text-yellow-400 m-1 text-3xl cursor-pointer top-2 right-2 absolute select-none"/>)}
+         {!user.isdark &&(<MdDarkMode onClick={ChangeLighting} className=" text-gray-400 m-1 text-3xl cursor-pointer top-2 right-1 sm:right-2 absolute select-none "/>)}
+         {user.isdark &&(<MdLightMode onClick={ChangeLighting} className=" text-yellow-400 m-1 text-3xl cursor-pointer top-2 right-1 sm:right-2 absolute select-none"/>)}
 
-         <form onSubmit={handleSubmit(Changeuser)} className='p-8 mt-6 -mx-1 sm:mx-3'>
+        <h1 className='text-[19px] sm:text-2xl font-semibold Accent_Color ml-1.5 sm:ml-2 mt-3 sm:mb-10 '>Change User and Password</h1>
 
-          <h1 className='text-xl sm:text-2xl font-semibold Accent_Color mb-6'>Change User and Password</h1>
+         <form onSubmit={handleSubmit(Changeuser)} className='px-8 pb-8 mt-6 sm:-mt-5 -mx-1 sm:mx-3'>
 
           <div className='flex flex-col my-2.5 mx-2'>
             <label className='text-xl mb-1 font-semibold' htmlFor="username">Username</label>
@@ -117,10 +118,11 @@ function Change_User({setuseroptions,ChangeLighting}:{setuseroptions:React.Dispa
            {errors.Password &&(<p className='Red_Text_Color pl-1 my-1 select-none text-sm sm:text-base '>{errors.Password.message}</p>)}
           </div>
 
+           {errors.root &&(<p className='Red_Text_Color mt-5 select-none text-base sm:text-lg text-center'>{errors.root.message}</p>)}
+
           <div className='mt-5'>
             <button className='border-2 Border_Color rounded-xl w-full h-10 Border_Hover text-xl my-4 Accent_Color font-semibold select-none'>{isSubmitting ? 'Loading...' : 'Submit'}</button>
           </div>
-
           {DoneMessage!=='' && (<p className='text-center Green_Text_Color font-semibold my-5 text-lg lg:text-xl'>{DoneMessage}</p>)}
 
           <div>

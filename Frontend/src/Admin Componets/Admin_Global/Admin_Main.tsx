@@ -18,9 +18,9 @@ function Admin_Main() {
 
   return (
      <div className="Inner_Section_Background">
-       <section className="flex items-center text-2xl font-semibold p-1 ">
+       <section className="flex items-center text-2xl font-semibold p-1 md:ml-[15%] lg:ml-[20%] xl:ml-[25%] 2xl:ml-[30%] ">
          <RiAdminFill className="Secondary_Text_Color"/>
-         <h1 className="mx-0.5 Orange_Text_Color">Admin Options</h1>
+         <h1 className="mx-0.5  Orange_Text_Color">Admin Options</h1>
        </section>
         
        <section className=" mx-[5%] md:mx-[25%] 2xl:mx-[35%] my-5 flex justify-between items-center">
@@ -30,7 +30,7 @@ function Admin_Main() {
             className=" text-center rounded-xl Card_Hover ">
             <button 
              onClick={()=>{ChooseOption(o)}} 
-             className={`${option[o as keyof typeof option]  ?  'Green_Text_Color' : 'Accent_Color '} text-lg lg:text-xl xl:text-2xl Text_Hover font-semibold p-1.5 `}>{o}</button>
+             className={`${option[o as keyof typeof option]  ?  'Green_Text_Color' : 'Accent_Color '} text-xl lg:text-2xl  Text_Hover font-semibold p-1.5 `}>{o}</button>
           </motion.div>
           ))}
        </section>

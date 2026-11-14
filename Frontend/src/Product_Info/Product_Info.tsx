@@ -18,6 +18,7 @@ import Sale from '../Utilities/assets/sale-icon.webp'
 import { Sort } from "./Product_Info_data";
 
 import {useEffect, useState } from "react";
+import { useQuery } from "@tanstack/react-query";
 import { Globalstore } from "../Utilities/Global_Store";
 
 import  RefreshCheck from "../Utilities/Refresh_Check";
@@ -42,16 +43,18 @@ function Product_Info({product,setshowproduct}:{product:itemtype,setshowproduct:
         setquantity(quantity.data)
         const reviews=await api.get(`/product/getcomments/${product.product_id}`,{headers:{Authorization:`Bearer ${currentToken}`}})
         setcomments(reviews.data)
+        return ''
       }
       catch(error){
+        
         if(axios.isAxiosError(error)){
           if(error.response?.status===401){
             const restore= await RefreshCheck()
-            if(restore){GetProductValues()}}}
+            if(restore){GetProductValues()}}
+          else{throw error}   
+          }
         else{console.log('Get Quantity',error)}
-        return ''
-       } 
-     }       
+       return ''}}       
  
   async function ChangeQuantity(type:string){
       const currentToken = Globalstore.getState().accesstoken
@@ -138,59 +141,63 @@ function Product_Info({product,setshowproduct}:{product:itemtype,setshowproduct:
       CheckProperties()
      },[comments,user.username])
 
-  // eslint-disable-next-line react-hooks/exhaustive-deps
-  useEffect(()=>{GetProductValues()},[])
+
+  const {isLoading,isError,error}=useQuery({queryKey:['Getproduct'],queryFn:GetProductValues})
 
   return (
-     <motion.div initial={{opacity:0}} animate={{opacity:1}} transition={{duration:.5,ease:'easeInOut'}} exit={{opacity:0}}
+   <motion.div initial={{opacity:0}} animate={{opacity:1}} transition={{duration:.5,ease:'easeInOut'}} exit={{opacity:0}}
       onClick={()=>setshowproduct(false)} className="fixed inset-0 z-50 flex justify-center items-center ">
-  
+       
       <motion.div onClick={(e)=>e.stopPropagation()} initial={{opacity:0}} animate={{opacity:1}} transition={{duration:.5,ease:'easeInOut'}}
-        className="Inner_Section_Background border-3 Border_Color rounded-xl overflow-y-auto NoScrollbar w-170 md:w-200 h-160 sm:h-200 mx-6 relative">
-
-        <section className=" flex items-center justify-between text-lg sm:text-xl">
+        className="Inner_Section_Background border-3 Border_Color rounded-xl overflow-y-auto NoScrollbar w-170 md:w-180 h-160 sm:h-200 mx-6 relative">
+      
+       {(!isLoading && !isError) &&(
+       <>
+         <section className=" flex items-center justify-between text-lg sm:text-xl">
           <h1 className="Orange_Text_Color font-semibold m-1.5">{product.title}</h1>
           <section className=" flex items-center select-none ">
             <p className="Accent_Color font-semibold ">{product.rating}</p>
             <FaStar className="text-yellow-300 mx-0.5 "/>
           </section>
-        </section>
+         </section>
 
-        <p className="ml-1.5 Orange_Text_Color font-semibold mt-0.5 text-lg" >{product.category}</p>
-
-        <article className="flex justify-center items-center">
+         <p className="ml-1.5 Orange_Text_Color font-semibold mt-0.5 text-lg" >{product.category}</p>
+ 
+         <article className="flex justify-center items-center">
           <img draggable={false} className="w-80 h-80 sm:w-90 sm:h-90 rounded-xl my-5 select-none" src={product.images} alt={`${product.title} Image`} />
-        </article>
+         </article>
        
-       {parseFloat(product.newprice)>0 &&(<img draggable={false} className=" absolute w-20 h-20 top-13.5 right-0.5 select-none " src={Sale} alt="Sale Image" />)}
+         {parseFloat(product.newprice)>0 &&(<img draggable={false} className=" absolute w-20 h-20 top-13.5 right-0.5 select-none " src={Sale} alt="Sale Image" />)}
        
-        <div>
+         <div>
           <h1 className="Accent_Color text-xl font-semibold ml-1.5 ">Description</h1>
           <p className=" Secondary_Text_Color mx-1.5 mt-1.5 ">{product.description}</p>
-        </div>
+         </div>
 
-        <Purchase_Product product={product} quantity={quantity} isUpdating={isUpdating} isshowingword={isshowingword} setshowingword={setshowingword} ChangeQuantity={ChangeQuantity}/>
+         <Purchase_Product product={product} quantity={quantity} isUpdating={isUpdating} isshowingword={isshowingword} setshowingword={setshowingword} ChangeQuantity={ChangeQuantity}/>
 
-        <div>
-         <h1 className="Accent_Color text-xl font-semibold mb-3 ml-1.5">Reviews by Users</h1>
+         <div>
+          <h1 className="Accent_Color text-xl font-semibold mb-3 ml-1.5">Reviews by Users</h1>
 
-         <CreateComment CreateUpdateComment={CreateUpdateComment} properties={properties} setproperties={setproperties} />
+          <CreateComment CreateUpdateComment={CreateUpdateComment} properties={properties} setproperties={setproperties} />
 
-         {comments.length>0 && (
-         <div className="my-5 flex justify-evenly w-[80%] sm:w-[60%] text-[21px] font-semibold select-none">
+          {comments.length>0 && (
+          <div className="my-5 flex justify-evenly w-[80%] sm:w-[60%] text-[21px] font-semibold select-none">
               {Sort.map((v,i)=><SortComment key={i} value={v} SortComments={SortComments} ordertype={ordertype}/>)}
-         </div>)}
+          </div>)}
 
-         {comments.length>0 &&(
-         <section className=" mx-1.5 mb-5 rounded-lg">
+          {comments.length>0 &&(
+          <section className=" mx-1.5 mb-5 rounded-lg">
             {comments.map((v,i)=><Reviews key={i} reviewer={v} index={i} length={comments.length} DeleteCommand={DeleteCommand}/>)}
-         </section>)}
+          </section>)}
 
-         {comments.length===0 && (<p className="Non_Data_State text-lg">No reviews for this item yet</p>)}
-        </div>
-
+          {comments.length===0 && (<p className="Non_Data_State text-lg">No reviews for this item yet</p>)}
+         </div>
+       </>)} 
+       {isLoading &&(<p className="Non_Data_State">Loading Product...</p>)}
+       {isError &&(<p className="Non_Data_State">{error.message}</p>)}  
       </motion.div>
-     </motion.div>
+   </motion.div>
   )}
 
 export default Product_Info

@@ -45,13 +45,15 @@ function Cart({setshowcart,NewCart,setCart}:{setshowcart:(veriable:boolean)=>voi
       if(axios.isAxiosError(error)){
         if(error.response?.status===401){
           const restore= await RefreshCheck()
-          if(restore){GetCart()}}}
+          if(restore){GetCart()}}
+        else{throw error} 
+        }
       else{console.log('Get Cart',error)}
       return ''
      }
    }
 
-  const {isLoading,isError}=useQuery({queryKey:['Cart',NewCart],queryFn:GetCart}) 
+  const {isLoading,isError,error}=useQuery({queryKey:['Cart',NewCart],queryFn:GetCart}) 
 
   async function RemoveFromcart(product_id:number){
     try{
@@ -125,7 +127,7 @@ function Cart({setshowcart,NewCart,setCart}:{setshowcart:(veriable:boolean)=>voi
        className={`text-xl lg:text-2xl mx-5 flex justify-center ${cartproduct.length===0 && 'h-[inherit]'} items-center font-semibold select-none Accent_Color`}>{FinalOrder}
        </p>)}
        {isLoading &&(<p className="Non_Data_State">Loading Cart...</p>)}
-       {isError &&(<p className="Non_Data_State">Internal server error</p>)}
+       {isError &&(<p className="Non_Data_State">{error.message}</p>)}
      </motion.div> 
     </motion.div>
   )

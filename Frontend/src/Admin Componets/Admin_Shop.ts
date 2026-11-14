@@ -1,7 +1,5 @@
 
-
 import { create } from "zustand";
-
 import type { AdminShop } from "./AdminTypes";
 
 export const Adminshop=create<AdminShop>((set)=>({
@@ -14,5 +12,4 @@ export const Adminshop=create<AdminShop>((set)=>({
             else{options[key as keyof typeof options]=false}}
         return {option:options}
     }),
-
 }))

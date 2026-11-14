@@ -10,6 +10,7 @@ import { Globalstore } from "../Utilities/Global_Store";
 import { layout_store } from "./Layout_Shop";
 
 import { useEffect, useState } from "react";
+import { useQuery } from "@tanstack/react-query";
 
 import RefreshCheck from "../Utilities/Refresh_Check";
 
@@ -28,13 +29,17 @@ function Layout() {
      else{document.documentElement.classList.remove('dark')}
    },[user.isdark])
 
-   useEffect(()=>{
-    async function CheckUser() {await RefreshCheck()} 
-    CheckUser()
-   },[])
+   async function Checkconnection() {
+      const status:boolean = await RefreshCheck()
+      return status
+   }
+
+   const {data,isLoading}=useQuery({queryKey:['layout'],queryFn:Checkconnection})
 
   return (
-    <div onClick={()=>setusermenu(false)} className='m-2 border-3 rounded-lg Border_Color'>
+   <section className={`${(isLoading || !data)  && 'h-screen'}`}>
+    {data &&(
+    <div onClick={()=>setusermenu(false)} className=' m-2 border-3 rounded-lg Border_Color'>
        <div className="text-2xl lg:text-3xl flex flex-col sm:flex-row sm:justify-between items-center py-3.5 border-b-3 Border_Color Outer_Section_Background sticky top-0 z-10">
 
           <Link to={'/'}><h1 className="ml-2 cursor-pointer whitespace-nowrap mb-3 sm:mb-0 select-none text-3xl lg:text-4xl Title_color">Tom's Market</h1></Link>
@@ -68,7 +73,10 @@ function Layout() {
 
        <Outlet/>
 
-    </div>
+    </div>)}
+    {isLoading &&(<p className="Non_Data_State">Loading Page...</p>)}
+    {!data && !isLoading &&(<p className="Non_Data_State">Network error</p>)}
+   </section>    
   )
 }
 export default Layout

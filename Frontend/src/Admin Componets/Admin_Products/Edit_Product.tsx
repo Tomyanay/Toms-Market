@@ -33,7 +33,9 @@ function Edit_Product({product,setChosenItem,setaction}:{product:AdminProducts,s
          if(axios.isAxiosError(error)){
            if(error.response?.status===401){
              const restore= await RefreshCheck()
-             if(restore){Set_Product(data)}}}
+             if(restore){Set_Product(data)}}
+           else{setError('root',{message:error.message})}
+          }
          else{console.log('Admin Edit Product',error)}
          return ''
         }
@@ -159,6 +161,8 @@ function Edit_Product({product,setChosenItem,setaction}:{product:AdminProducts,s
          </textarea>
             {errors.description && (<p className="Red_Text_Color my-1 select-none text-sm sm:text-base">{errors.description.message}</p>)}
         </section>
+        
+        {errors.root &&(<p className='Red_Text_Color mt-5 select-none text-base sm:text-lg text-center'>{errors.root.message}</p>)}
 
         <div className='mt-5'>
           <button className='border-2 Border_Color rounded-xl w-full h-10 Border_Hover text-xl mb-5 Accent_Color font-semibold select-none'>{isSubmitting ? 'Loading...' : 'Submit'}</button>

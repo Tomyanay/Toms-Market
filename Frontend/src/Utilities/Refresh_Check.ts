@@ -13,14 +13,14 @@ async function RefreshCheck() {
   } 
     
   catch (error) {
-   
-     console.log('Refresh Error', error);
-
-     if (axios.isAxiosError(error) && (error.response?.status === 401)) {
-      Globalstore.getState().cleartoken();
-      Globalstore.getState().clearuser();
-      window.location.href = '/login'}
-     else {console.error('Non-auth error during refresh, keeping session state.')}
+    console.log('Refresh Error', error)
+    if (axios.isAxiosError(error) && (error.response?.status === 401)) {
+     Globalstore.getState().cleartoken();
+     Globalstore.getState().clearuser();
+     window.location.href = '/login'}
+    else {console.error('Non-auth error during refresh, keeping session state.')}
+     
+    return false
   }
 }
 
