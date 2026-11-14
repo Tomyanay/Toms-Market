@@ -30,15 +30,15 @@ function Layout() {
    },[user.isdark])
 
    async function Checkconnection() {
-      const status:boolean = await RefreshCheck()
+      const status = await RefreshCheck()
       return status
    }
 
    const {data,isLoading}=useQuery({queryKey:['layout'],queryFn:Checkconnection})
 
   return (
-   <section className={`${(isLoading || !data)  && 'h-screen'}`}>
-    {data &&(
+   <section className={`${(isLoading || data!==true)  && 'h-screen'}`}>
+    {data===true &&(
     <div onClick={()=>setusermenu(false)} className=' m-2 border-3 rounded-lg Border_Color'>
        <div className="text-2xl lg:text-3xl flex flex-col sm:flex-row sm:justify-between items-center py-3.5 border-b-3 Border_Color Outer_Section_Background sticky top-0 z-10">
 
@@ -75,7 +75,7 @@ function Layout() {
 
     </div>)}
     {isLoading &&(<p className="Non_Data_State">Loading Page...</p>)}
-    {!data && !isLoading &&(<p className="Non_Data_State">Network error</p>)}
+    {(data!=='' && data!==true) && !isLoading &&(<p className="Non_Data_State">Network error</p>)}
    </section>    
   )
 }

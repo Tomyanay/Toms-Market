@@ -119,7 +119,7 @@ function Product_Info({product,setshowproduct}:{product:itemtype,setshowproduct:
           if(error.response?.status===401){
              const restore=await RefreshCheck()
              if(restore){DeleteCommand(reviewerName)}}}
-             else{console.log('Delete Comment',error)}
+        else{console.log('Delete Comment',error)}
         return ''
       }
     }

@@ -17,10 +17,15 @@ async function RefreshCheck() {
     if (axios.isAxiosError(error) && (error.response?.status === 401)) {
      Globalstore.getState().cleartoken();
      Globalstore.getState().clearuser();
-     window.location.href = '/login'}
-    else {console.error('Non-auth error during refresh, keeping session state.')}
+     window.location.href = '/login'
+     return ''
+    }
+    else {
+      console.error('Non-auth error during refresh, keeping session state.')
+      return 'None user Error'
+    }
      
-    return false
+    
   }
 }
 
