@@ -18,9 +18,9 @@ async function RefreshCheck() {
      Globalstore.getState().cleartoken();
      Globalstore.getState().clearuser();
      window.location.href = '/login'}
-    else {console.error('Non-auth error during refresh, keeping session state.')}
-     
-    return false
+    else {
+     console.error('Non-auth error during refresh, keeping session state.')
+     return false}    
   }
 }
 
