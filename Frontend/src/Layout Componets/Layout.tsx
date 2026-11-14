@@ -30,7 +30,7 @@ function Layout() {
    },[user.isdark])
 
    async function Checkconnection() {
-      const status:boolean = await RefreshCheck()
+      const status = await RefreshCheck()
       return status
    }
 
